@@ -1,106 +1,100 @@
-# Reddit Clone App on Kubernetes with Ingress
-This project demonstrates how to deploy a Reddit clone app on Kubernetes with Ingress and expose it to the world using Minikube as the cluster.
-Below is an overview of the architecture of this Reddit Clone App running on Kubernetes with Ingress.
-![Architecture Diagram](https://github.com/LondheShubham153/reddit-clone-k8s-ingress/assets/71492927/e1eec5f2-1983-445b-8966-e9acfdea7f8e)
+# Reddit Clone App on Kubernetes
+
+## Project Overview
+
+This project demonstrates how to deploy a **Reddit clone application** on Kubernetes and run it locally. The Reddit clone app mimics the basic functionalities of Reddit, such as creating posts and viewing content. The project uses **Docker** for containerization and **kind** (or Minikube) as the local Kubernetes cluster.  
+
+The architecture includes:
+
+- **Frontend & Backend Services** running as Kubernetes Deployments
+- **Services** exposing Deployments internally
+- **Port-forwarding** to access the app locally  
+
+---
 
 ## Prerequisites
-Before you begin, you should have the following tools installed on your local machine: 
 
-- Docker
-- Minikube cluster ( Running )
-- kubectl
-- Git
+Before you begin, ensure you have the following installed on your local machine:
 
-You can install Prerequisites by doing these steps. [click here & complete all steps one by one]().
+- [Docker](https://www.docker.com/)
+- [kind](https://kind.sigs.k8s.io/) (or Minikube)
+- [kubectl](https://kubernetes.io/docs/tasks/tools/)
+- [Git](https://git-scm.com/)
 
+---
 
 ## Installation
-Follow these steps to install and run the Reddit clone app on your local machine:
 
-1) Clone this repository to your local machine: `git clone https://github.com/LondheShubham153/reddit-clone-k8s-ingress.git`
-2) Navigate to the project directory: `cd reddit-clone-k8s-ingress`
-3) Build the Docker image for the Reddit clone app: `docker build -t reddit-clone-app .`
-4) Deploy the app to Kubernetes: `kubectl apply -f deployment.yaml`
-1) Deploy the Service for deployment to Kubernetes: `kubectl apply -f service.yaml`
-5) Enable Ingress by using Command: `minikube addons enable ingress`
-6) Expose the app as a Kubernetes service: `kubectl expose deployment reddit-deployment --type=NodePort --port=5000`
-7) Create an Ingress resource: `kubectl apply -f ingress.yaml`
+Follow these steps to run the Reddit clone app locally:
 
-
-## Test Ingress DNS for the app:
-- Test Ingress by typing this command: `curl http://domain.com/test`
-
-## Cluster Monitoring using Prometheus & Grafana
-
-Key Components :
-
-- Prometheus server - Processes and stores metrics data
-- Alert Manager - Sends alerts to any systems/channels
-- Grafana - Visualize scraped data in UI
-
-Pre Requisites :
-- EKS Cluster is setup already
-- Install Helm
-- EC2 instance to access EKS cluster
-
-Installation Steps 
-```sh
-helm repo add stable https://charts.helm.sh/stable
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm search repo prometheus-community
-kubectl create namespace prometheus
-helm install stable prometheus-community/kube-prometheus-stack -n prometheus
-kubectl get pods -n prometheus
-kubectl get svc -n prometheus
+1. **Clone the repository:**
+```
+git clone https://github.com/muhammadiishaq/reddit-clone-with-k8s.git
+```
+2. Navigate to the project directory:
+```
+cd reddit-clone-k8s-ingress
 ```
 
-Edit Prometheus Service (Edit type : LoadBalancer)
-```sh
-kubectl edit svc stable-kube-prometheus-sta-prometheus -n prometheus
+3. Build the Docker image:
+```
+docker build -t reddit-clone-app .
 ```
 
-Edit Grafana Service (Edit type : LoadBalancer) 
-```sh
-kubectl edit svc stable-grafana -n prometheus
+4. Optionally, push the Docker image to Docker Hub:
+```
+docker tag reddit-clone-app <your-dockerhub-username>/reddit-clone-app:latest
+docker push <your-dockerhub-username>/reddit-clone-app:latest
 ```
 
-Verify if service is changed to LoadBalancer and also to get the Load Balancer URL.
-```sh
-kubectl get svc -n prometheus
+4. Deploy the app to Kubernetes:
+```
+kubectl apply -f deployment.yaml
 ```
 
-Access Grafana Dashboard
-```sh
-UserName: admin 
-Password: prom-operator
+5. Deploy the Service for the app:
+```
+kubectl apply -f service.yaml
+```
+6. Access the app locally using port-forwarding:
+```
+kubectl port-forward svc/reddit-clone-service 8080:3000
+
+```
+7. Open your browser and go to:
+```
+http://localhost:8080/
+```
+## Architecture Diagram
+
+```
+User --> Service --> Deployment (Reddit Clone App)
 ```
 
+1. Deployment: Runs the Reddit clone application as pods.
 
-For creating a dashboard to monitor the cluster:
+2. Service: Exposes the Deployment internally in the cluster.
 
-```sh
-Click '+' button on left panel and select ‘Import’.
-Enter 12740 dashboard id under Grafana.com Dashboard.
-Click ‘Load’.
-Select ‘Prometheus’ as the endpoint under prometheus data sources drop down.
-Click ‘Import’.
+3. Port-forwarding: Allows local access to the app without Ingress.
+
+## Project Structure
+```
+reddit-clone-with-k8s/
+├── project
+├── Dockerfile
+├── deployment.yaml
+├── service.yaml
+└── README.md
 ```
 
-
-### Images For reference
-
-
-
-<img width="1396" alt="image" src="https://user-images.githubusercontent.com/110477025/227587553-7163c709-85cf-4e23-a00b-823b08758859.png">
-
-
-
-<img width="1400" alt="image" src="https://user-images.githubusercontent.com/110477025/227587788-06ce33dd-3a09-4f36-9bbd-aff0925615ed.png">
-
-
-
+Dockerfile: Builds the Reddit clone app image.
+deployment.yaml: Kubernetes Deployment configuration.
+service.yaml: Kubernetes Service configuration.
 
 ## Contributing
-If you'd like to contribute to this project, please open an issue or submit a pull request.
 
+Feel free to fork this repository, make improvements, and submit pull requests.
 
+## License
+
+This project is licensed under the MIT License.
